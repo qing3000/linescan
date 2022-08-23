@@ -301,7 +301,9 @@ if __name__ == '__main__':
         plt.savefig('plots\\WaveletMethod\\%s.png' % shortfn, bbox_inches = 'tight')
         plt.close()
 
-    plt.plot(manual_means, wave_means, '.')
+    p = np.polyfit(manual_means[:-1], wave_means[:-1], 2)
+    plt.plot(manual_means, wave_means, '.')#
+    plt.plot(manual_means, np.polyval(p, manual_means), '--')
     plt.grid(True)
     plt.xlabel('Average particle size (secondary axis) by manual method')
     plt.ylabel('Average particle size by wavelet method')
