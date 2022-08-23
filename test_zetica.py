@@ -8,16 +8,11 @@ Created on Mon Feb 14 15:57:04 2022
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.linalg as li
-from imageio import imread, imwrite
+from imageio import imread
 import pywt
 from skimage.restoration import denoise_wavelet, estimate_sigma
-import cv2 as cv
 import glob
 import scipy.ndimage as ni
-import sys
-sys.path.append('..\pyDGS')
-from dgs import dgs, standardize
-import pdb
 
 def quadratic_surfacefit_mask(zdata, mask):
     M, N = np.shape(zdata)
@@ -301,9 +296,10 @@ if __name__ == '__main__':
         plt.savefig('plots\\WaveletMethod\\%s.png' % shortfn, bbox_inches = 'tight')
         plt.close()
 
-    p = np.polyfit(manual_means[:-1], wave_means[:-1], 2)
+    p = np.polyfit(manual_means[:-1], wave_means[:-1], 1)
+    x = np.arange(15, 35)
     plt.plot(manual_means, wave_means, '.')#
-    plt.plot(manual_means, np.polyval(p, manual_means), '--')
+    plt.plot(x, np.polyval(p, x), '--')
     plt.grid(True)
     plt.xlabel('Average particle size (secondary axis) by manual method')
     plt.ylabel('Average particle size by wavelet method')
