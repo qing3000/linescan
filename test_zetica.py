@@ -174,16 +174,15 @@ def calculate_PSD(im, maxscale):
     #     plt.ylabel('Scale')
     
     '''Plot the average PSD'''
-    for row in rows:
-        plt.plot(wavelengths, averagePSD1[:, row], label = 'Row %d' % row)
-    plt.legend(loc = 0)
+    # for row in rows:
+    #     plt.plot(wavelengths, averagePSD1[:, row], label = 'Row %d' % row)
+    # plt.legend(loc = 0)
 
-    plt.grid(True)
-    plt.xlabel('Wavelengths (pixels)')
-    plt.ylabel('Magntidue^2')
-    plt.title('Average PSD')
-
-    raise SystemExit
+    # plt.grid(True)
+    # plt.xlabel('Wavelengths (pixels)')
+    # plt.ylabel('Magntidue^2')
+    # plt.title('Average PSD')
+    # raise SystemExit
 
     '''Normalise the PSD'''
     averagePSD = averagePSD / np.sum(averagePSD)
@@ -277,7 +276,7 @@ if __name__ == '__main__':
         # hx = data_out['grain size bins']
         # hy = data_out['grain size frequencies']
         
-        csvfn = 'C:\\Personal\\Python\\Zetica\\linescan\\zetica_data\manual_secondary_lengths.csv'
+        csvfn = 'zetica_data\\cribimages\\manual_secondary_lengths.csv'
         data = np.genfromtxt(csvfn, delimiter = ',', skip_header = 1)
         x = data[:, i]
         x = x[np.logical_not(np.isnan(x))]
@@ -299,7 +298,7 @@ if __name__ == '__main__':
         plt.legend(loc = 0)
         plt.title('Particle size distributions')
         shortfn = fn[fn.rfind('\\') + 1:-4]
-        plt.savefig('%s.png' % shortfn, bbox_inches = 'tight')
+        plt.savefig('plots\\WaveletMethod\\%s.png' % shortfn, bbox_inches = 'tight')
         plt.close()
 
     plt.plot(manual_means, wave_means, '.')
