@@ -12,7 +12,7 @@ import glob
 
 fns = glob.glob('zetica_data\\raw\\*.png')
 edgeCrop = 20
-maxscale = 6
+maxscale = 80
 leftMeans = []
 rightMeans = []
 for i, fn in enumerate(fns):
