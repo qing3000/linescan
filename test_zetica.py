@@ -13,6 +13,7 @@ import pywt
 from skimage.restoration import denoise_wavelet, estimate_sigma
 import glob
 import scipy.ndimage as ni
+from datetime import datetime
 
 def quadratic_surfacefit_mask(zdata, mask):
     M, N = np.shape(zdata)
@@ -124,12 +125,14 @@ def calculate_PSD(im, maxscale):
     '''Denoise the image'''
     sigma_est = estimate_sigma(im, channel_axis = None, average_sigmas = True)
     denoisedImg = denoise_wavelet(im, channel_axis = None, rescale_sigma = True, method = 'VisuShrink', mode = 'soft', sigma=sigma_est * 2)
-
+    
     #Why do we need to do this???
     denoisedImg = rescale(denoisedImg, [0, 255])
     
+    dt = datetime.now()
     '''Calculate the wavelet coefficients'''
     cfs, frequencies = pywt.cwt(denoisedImg, np.arange(1, maxscale),  'morl')
+    print(datetime.now() - dt)
     
     '''Calculate the wavelength'''
     wavelengths = 1.0 / frequencies
@@ -147,7 +150,7 @@ def calculate_PSD(im, maxscale):
     averagePSD = np.mean(averagePSD1, axis = 1)
 
     '''Plot the wavelet transform'''
-    rows = np.linspace(50, M - 50, 3).astype('int')
+    # rows = np.linspace(50, M - 50, 3).astype('int')
     # wavelet = pywt.ContinuousWavelet('morl')
     # [psi, x] = wavelet.wavefun(8)
     # plt.subplot(3,1,1)
@@ -219,57 +222,19 @@ if __name__ == '__main__':
     fns = glob.glob('zetica_data\\cribimages\\*.png')
     wave_means = []
     manual_means = []
-    for i, fn in enumerate(fns):
-        maxscale = 80
+    maxscale = 80
             
+    for i, fn in enumerate(fns):
+
         '''Read in the image'''
         im_raw = imread(fn)
         im = im_raw[25:-30, :-20]
         
         im = enhance_image_quality(im)
-        #imwrite('temp.png', im)
-        
-        '''Image processing to derive the particle geometries'''
-        # im_display = np.dstack([im0] * 3)
-        # im0 = im0.astype('double')
-        # mask = np.array([[True] * N] * M)
-        # bkg, mse, temp = quadratic_surfacefit_mask(im0, mask)
-        
-        # im1 = im0 - bkg
-        # im2 = cv.GaussianBlur(im1, (3, 3), 0)
-        # im3 = rescale(im2, [0, 255]).astype('uint8')
-        
-        # edgeImg = (im3 > 70).astype('uint8') * 255
-        # contours, hierarchy = cv.findContours(edgeImg, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
-        # validContours = list(filter(lambda x : cv.contourArea(x) > 20, contours))
-        
-        # blocks = np.zeros((M, N , 3)).astype('uint8')
-        # cv.drawContours(blocks, validContours, -1, (255, 255, 255), -1)
-        # #cv.drawContours(im_display, validContours, -1, (105, 0, 0), 1)
-        
-        # #plt.imsave('test.png', blocks)
-        # #a = Annotate(edgeImg)
-        # plt.subplot(2,2,1)
-        # plt.imshow(im_display, interpolation = 'none', cmap = 'gray')
-        # plt.title('Raw image')
-        # plt.subplot(2,2,2)
-        # plt.imshow(im3, interpolation = 'none', cmap = 'jet', vmin = 0, vmax = 100)
-        # plt.title('Background corrected and Gaussian smoothed')
-        # plt.colorbar()
-        # plt.subplot(2,2,3)
-        # plt.imshow(edgeImg, interpolation = 'none', cmap = 'gray')
-        # plt.title('Thresholded image')
-        # plt.subplot(2,2,4)
-        # plt.imshow(blocks, interpolation = 'none', cmap = 'gray')
-        # plt.title('Clean up')
-        # raise SystemExit
         
         wavelengths, psd = calculate_PSD(im.astype('double'), maxscale)
         meansize = np.sum(psd * wavelengths)
         
-        # data_out = dgs('temp.png', resolution = 1, maxscale = maxscale, verbose = 0, x = 0)
-        # hx = data_out['grain size bins']
-        # hy = data_out['grain size frequencies']
         
         csvfn = 'zetica_data\\cribimages\\manual_secondary_lengths.csv'
         data = np.genfromtxt(csvfn, delimiter = ',', skip_header = 1)
