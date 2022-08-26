@@ -44,14 +44,19 @@ if __name__ == '__main__':
         heights.append(height)
     heights = np.array(heights)
     fns = np.array(fns)
-    short_fns = fns[np.logical_and(heights > 0, heights < 500)][:2000]
+    short_fns = fns[np.logical_and(heights > 0, heights < 500)]
     
     meansizes = []
     for meansize in tqdm.tqdm(pool.imap(calculate_mean_size, short_fns), total = len(short_fns)):
         meansizes.append(meansize)
     pool.close()
     
-    np.savetxt('meansizes.csv', meansizes, fmt = '%.2f', delimiter = ',')
+    f = open('meansizes_full.csv', 'w')
+    f.write('Filename,Meansize(mm)\n')
+    for short_fn, meansize in zip(short_fns, meansizes):
+        ss = short_fn[short_fn.rfind('\\') + 1:]
+        f.write('%s,%.2f\n' % (ss, meansize))
+    f.close()
     
     plt.plot(meansizes)
     plt.grid(True)
