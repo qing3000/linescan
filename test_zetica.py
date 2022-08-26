@@ -129,10 +129,8 @@ def calculate_PSD(im, maxscale):
     #Why do we need to do this???
     denoisedImg = rescale(denoisedImg, [0, 255])
     
-    dt = datetime.now()
     '''Calculate the wavelet coefficients'''
     cfs, frequencies = pywt.cwt(denoisedImg, np.arange(1, maxscale),  'morl')
-    print(datetime.now() - dt)
     
     '''Calculate the wavelength'''
     wavelengths = 1.0 / frequencies
