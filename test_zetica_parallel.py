@@ -16,9 +16,7 @@ import tqdm
 
 def calculate_mean_size(fn):
     maxscale = 80
-    im_raw = imread(fn)
-    im = im_raw[25:-30, :-20]
-    
+    im = imread(fn)
     # im = enhance_image_quality(im)
     
     wavelengths, psd = calculate_PSD(im.astype('double'), maxscale)
@@ -44,8 +42,7 @@ if __name__ == '__main__':
         heights.append(height)
     heights = np.array(heights)
     fns = np.array(fns)
-    short_fns = fns[np.logical_and(heights > 0, heights < 500)]
-    
+    short_fns = fns[np.logical_and(heights > 300, heights < 500)]
     meansizes = []
     for meansize in tqdm.tqdm(pool.imap(calculate_mean_size, short_fns), total = len(short_fns)):
         meansizes.append(meansize)
