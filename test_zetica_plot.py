@@ -13,6 +13,7 @@ from test_zetica import enhance_image_quality
 if __name__ == '__main__':
     fpath = '..\\mud\\Output\\Cribs\\Run_354\\'
     fns, meansizes = np.genfromtxt('meansizes.csv', dtype = str, delimiter = ',', unpack = True, skip_header = 1)
+    meansizes = list(map(float, meansizes))
     plt.figure(figsize = (16, 12))
     plt.subplot(4, 1, 1)
     plt.plot(meansizes)
